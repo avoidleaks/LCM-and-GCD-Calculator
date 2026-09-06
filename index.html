@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LCM & GCD Calculator</title>
+    <style>
+        /* ───────────── Reset & Base ───────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(145deg, #f6f9fc 0%, #e9f0f5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        /* ───────────── Card ───────────── */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 2.5rem;
+            box-shadow:
+                0 20px 60px rgba(0, 20, 40, 0.12),
+                0 8px 24px rgba(0, 20, 40, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            padding: 2.5rem 2.8rem 2.8rem;
+            max-width: 700px;
+            width: 100%;
+            transition: box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .card:hover {
+            box-shadow:
+                0 28px 72px rgba(0, 20, 40, 0.16),
+                0 8px 28px rgba(0, 20, 40, 0.08);
+        }
+
+        /* ───────────── Header ───────────── */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .header-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .header h1 {
+            font-size: 1.85rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #0a1e2e;
+            background: linear-gradient(135deg, #0a1e2e 0%, #1a3a5a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #4a6a8a;
+            font-size: 0.95rem;
+            font-weight: 400;
+            margin-top: -0.1rem;
+            margin-bottom: 1.8rem;
+            padding-left: 0.15rem;
+            letter-spacing: 0.01em;
+            border-left: 3px solid #3b82f6;
+            padding-left: 0.9rem;
+        }
+
+        /* ───────────── Input Row ───────────── */
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            flex: 1 1 0;
+            min-width: 130px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #3a5a7a;
+            margin-bottom: 0.35rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border: 2px solid #dce6ef;
+            border-radius: 1.2rem;
+            background: rgba(255, 255, 255, 0.7);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            outline: none;
+            color: #0a1e2e;
+            font-family: inherit;
+        }
+
+        .input-group input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+            background: #ffffff;
+        }
+
+        .input-group input::placeholder {
+            color: #a0b8ce;
+            font-weight: 400;
+        }
+
+        /* ───────────── Buttons ───────────── */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 3rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            letter-spacing: 0.01em;
+            flex: 1 1 auto;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.30);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0px);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.7);
+            color: #2a4a6a;
+            border: 2px solid #dce6ef;
+            backdrop-filter: blur(4px);
+        }
+
+        .btn-secondary:hover {
+            background: #ffffff;
+            border-color: #b0c8de;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0px);
+        }
+
+        /* ───────────── Results ───────────── */
+        .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.4rem;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 2px 8px rgba(0, 20, 40, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 20, 40, 0.06);
+        }
+
+        .result-card .label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #5a7a9a;
+            display: block;
+            margin-bottom: 0.1rem;
+        }
+
+        .result-card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0a1e2e;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            word-break: break-all;
+        }
+
+        .result-card .value.gcd-value {
+            color: #2563eb;
+        }
+
+        .result-card .value.lcm-value {
+            color: #7c3aed;
+        }
+
+        /* ───────────── Steps (Euclidean) ───────────── */
+        .steps-section {
+            margin-top: 0.2rem;
+        }
+
+        .steps-section .steps-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #3a5a7a;
+            cursor: pointer;
+            padding: 0.4rem 0.2rem;
+            font-family: inherit;
+            transition: color 0.2s ease;
+            width: 100%;
+            border-bottom: 2px solid transparent;
+        }
+
+        .steps-section .steps-toggle:hover {
+            color: #1a3a5a;
+        }
+
+        .steps-section .steps-toggle .arrow {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            font-size: 0.7rem;
+        }
+
+        .steps-section .steps-toggle .arrow.open {
+            transform: rotate(90deg);
+        }
+
+        .steps-container {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s ease,
+                margin 0.3s ease;
+            margin-top: 0;
+        }
+
+        .steps-container.open {
+            max-height: 600px;
+            opacity: 1;
+            margin-top: 0.8rem;
+        }
+
+        .steps-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .steps-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.55rem 1rem;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px);
+            border-radius: 1rem;
+            font-size: 0.92rem;
+            font-weight: 450;
+            color: #1a3a5a;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: background 0.2s ease;
+        }
+
+        .steps-list li:hover {
+            background: rgba(255, 255, 255, 0.75);
+        }
+
+        .steps-list .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: 1.6rem;
+            height: 1.6rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .steps-list .step-num.gcd-step {
+            background: #7c3aed;
+        }
+
+        .steps-list .step-arrow {
+            color: #6a8aaa;
+            font-weight: 300;
+            margin: 0 0.1rem;
+        }
+
+        .steps-list .highlight {
+            font-weight: 700;
+            color: #0a1e2e;
+        }
+
+        .steps-list .mod-result {
+            background: rgba(37, 99, 235, 0.08);
+            padding: 0.05rem 0.6rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .steps-list .gcd-result {
+            background: rgba(124, 58, 237, 0.10);
+            padding: 0.05rem 0.6rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            color: #7c3aed;
+        }
+
+        .empty-steps {
+            color: #7a9ab0;
+            font-size: 0.9rem;
+            padding: 0.6rem 0.2rem;
+            font-style: italic;
+        }
+
+        /* ───────────── Responsive ───────────── */
+        @media (max-width: 560px) {
+            .card {
+                padding: 1.8rem 1.2rem 2rem;
+                border-radius: 1.8rem;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .header-icon {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.8rem;
+                padding-left: 0.6rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .input-row {
+                gap: 0.7rem;
+            }
+
+            .input-group input {
+                padding: 0.6rem 0.8rem;
+                font-size: 1rem;
+                border-radius: 1rem;
+            }
+
+            .results {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.7rem;
+            }
+
+            .result-card {
+                padding: 0.9rem 1rem;
+            }
+
+            .result-card .value {
+                font-size: 1.6rem;
+            }
+
+            .btn {
+                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+                min-width: 100px;
+            }
+
+            .steps-list li {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.7rem;
+                flex-wrap: wrap;
+            }
+
+            .steps-list .step-num {
+                width: 1.3rem;
+                height: 1.3rem;
+                font-size: 0.6rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .results {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* ───────────── Utility ───────────── */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* simple fade-in for results */
+        .fade-in {
+            animation: fadeUp 0.4s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" role="main" aria-label="LCM and GCD Calculator">
+
+        <!-- Header -->
+        <div class="header">
+            <span class="header-icon" aria-hidden="true">⊞</span>
+            <h1>LCM &amp; GCD</h1>
+        </div>
+        <div class="subtitle">
+            Euclidean Algorithm &bull; step by step
+        </div>
+
+        <!-- Inputs -->
+        <div class="input-row">
+            <div class="input-group">
+                <label for="numA">Number A</label>
+                <input type="number" id="numA" value="48" min="1" step="1" placeholder="e.g. 48" />
+            </div>
+            <div class="input-group">
+                <label for="numB">Number B</label>
+                <input type="number" id="numB" value="18" min="1" step="1" placeholder="e.g. 18" />
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn btn-primary" id="calculateBtn" type="button">
+                <span aria-hidden="true">⚡</span> Calculate
+            </button>
+            <button class="btn btn-secondary" id="clearBtn" type="button">
+                <span aria-hidden="true">↺</span> Clear
+            </button>
+        </div>
+
+        <!-- Results -->
+        <div class="results" id="resultsContainer">
+            <div class="result-card">
+                <span class="label">Greatest Common Divisor</span>
+                <div class="value gcd-value" id="gcdDisplay">—</div>
+            </div>
+            <div class="result-card">
+                <span class="label">Least Common Multiple</span>
+                <div class="value lcm-value" id="lcmDisplay">—</div>
+            </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps-section">
+            <button class="steps-toggle" id="stepsToggle" type="button" aria-expanded="false">
+                <span class="arrow" id="stepsArrow" aria-hidden="true">▶</span>
+                <span>Show Euclidean steps</span>
+            </button>
+            <div class="steps-container" id="stepsContainer" role="region" aria-label="Euclidean algorithm steps">
+                <ul class="steps-list" id="stepsList">
+                    <li class="empty-steps">Enter two numbers and click Calculate.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ─── DOM refs ───────────────────────────────────────────
+            const numAInput = document.getElementById('numA');
+            const numBInput = document.getElementById('numB');
+            const gcdDisplay = document.getElementById('gcdDisplay');
+            const lcmDisplay = document.getElementById('lcmDisplay');
+            const stepsList = document.getElementById('stepsList');
+            const stepsContainer = document.getElementById('stepsContainer');
+            const stepsToggle = document.getElementById('stepsToggle');
+            const stepsArrow = document.getElementById('stepsArrow');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            let stepsOpen = false;
+
+            // ─── Helpers ────────────────────────────────────────────
+            function getPositiveInt(value) {
+                const num = Number(value);
+                if (!Number.isInteger(num) || num < 1 || !isFinite(num)) return null;
+                return num;
+            }
+
+            // ─── Euclidean Algorithm (returns { gcd, steps }) ──────
+            function euclideanGCD(a, b) {
+                const steps = [];
+                let x = Math.abs(a);
+                let y = Math.abs(b);
+
+                // Ensure x >= y for cleaner steps, but algorithm works either way.
+                // We'll store the original ordering for display.
+                const origA = x;
+                const origB = y;
+
+                // If both zero (should not happen with our validation)
+                if (x === 0 && y === 0) {
+                    return { gcd: 0, steps: ['Both numbers are zero.'] };
+                }
+                if (x === 0) { return { gcd: y, steps: [`GCD(0, ${y}) = ${y}`] }; }
+                if (y === 0) { return { gcd: x, steps: [`GCD(${x}, 0) = ${x}`] }; }
+
+                let stepIndex = 1;
+                while (y !== 0) {
+                    const quotient = Math.floor(x / y);
+                    const remainder = x % y;
+                    steps.push({
+                        step: stepIndex,
+                        a: x,
+                        b: y,
+                        quotient: quotient,
+                        remainder: remainder,
+                        equation: `${x} = ${quotient} × ${y} + ${remainder}`
+                    });
+                    x = y;
+                    y = remainder;
+                    stepIndex++;
+                }
+                // Final step: GCD = x
+                steps.push({
+                    step: stepIndex,
+                    a: x,
+                    b: 0,
+                    quotient: null,
+                    remainder: null,
+                    final: true,
+                    equation: `GCD = ${x}`
+                });
+
+                return { gcd: x, steps };
+            }
+
+            // ─── Render ─────────────────────────────────────────────
+            function renderResults(a, b) {
+                const aVal = getPositiveInt(a);
+                const bVal = getPositiveInt(b);
+
+                if (aVal === null || bVal === null) {
+                    gcdDisplay.textContent = '—';
+                    lcmDisplay.textContent = '—';
+                    stepsList.innerHTML =
+                    `<li class="empty-steps">Please enter valid positive integers.</li>`;
+                    return;
+                }
+
+                // Compute GCD & steps
+                const { gcd, steps } = euclideanGCD(aVal, bVal);
+
+                // Compute LCM
+                let lcm = '—';
+                if (gcd !== 0) {
+                    const product = aVal * bVal;
+                    // Use BigInt to avoid overflow for very large numbers (but within JS safe int)
+                    // We'll just compute normally, but if product is huge we still show.
+                    if (Number.isSafeInteger(product / gcd)) {
+                        lcm = (product / gcd);
+                    } else {
+                        // Fallback: use BigInt for display
+                        const bigProduct = BigInt(aVal) * BigInt(bVal);
+                        const bigGcd = BigInt(gcd);
+                        lcm = (bigProduct / bigGcd).toString();
+                    }
+                }
+
+                // Update displays
+                gcdDisplay.textContent = gcd;
+                lcmDisplay.textContent = String(lcm);
+
+                // ── Build steps list ──
+                const fragment = document.createDocumentFragment();
+
+                if (steps.length === 0 || (steps.length === 1 && steps[0].final)) {
+                    const li = document.createElement('li');
+                    li.textContent = steps.length === 1 ? steps[0].equation : 'No steps.';
+                    fragment.appendChild(li);
+                } else {
+                    for (let i = 0; i < steps.length; i++) {
+                        const s = steps[i];
+                        const li = document.createElement('li');
+
+                        if (s.final) {
+                            // Final GCD result
+                            li.innerHTML = `
+                                <span class="step-num gcd-step">✓</span>
+                                <span><span class="highlight">GCD</span> = <span class="gcd-result">${s.a}</span></span>
+                                <span style="color:#6a8aaa;font-size:0.8rem;margin-left:auto;">done</span>
+                            `;
+                        } else {
+                            // Normal step
+                            li.innerHTML = `
+                                <span class="step-num">${s.step}</span>
+                                <span>
+                                    <span class="highlight">${s.a}</span>
+                                    <span class="step-arrow">=</span>
+                                    <span>${s.quotient}</span>
+                                    <span class="step-arrow">×</span>
+                                    <span class="highlight">${s.b}</span>
+                                    <span class="step-arrow">+</span>
+                                    <span class="mod-result">${s.remainder}</span>
+                                </span>
+                            `;
+                        }
+                        fragment.appendChild(li);
+                    }
+                }
+
+                stepsList.innerHTML = '';
+                stepsList.appendChild(fragment);
+
+                // Auto-open steps if there are results
+                if (!stepsOpen) {
+                    toggleSteps(true);
+                }
+            }
+
+            // ─── Toggle steps ───────────────────────────────────────
+            function toggleSteps(forceOpen) {
+                const open = (forceOpen !== undefined) ? forceOpen : !stepsOpen;
+                stepsOpen = open;
+                stepsContainer.classList.toggle('open', stepsOpen);
+                stepsToggle.setAttribute('aria-expanded', stepsOpen);
+                stepsArrow.classList.toggle('open', stepsOpen);
+                stepsToggle.querySelector('span:last-child').textContent =
+                    stepsOpen ? 'Hide Euclidean steps' : 'Show Euclidean steps';
+            }
+
+            // ─── Clear ──────────────────────────────────────────────
+            function clearAll() {
+                numAInput.value = '';
+                numBInput.value = '';
+                gcdDisplay.textContent = '—';
+                lcmDisplay.textContent = '—';
+                stepsList.innerHTML = `<li class="empty-steps">Enter two numbers and click Calculate.</li>`;
+                if (stepsOpen) toggleSteps(false);
+                // Focus first input
+                numAInput.focus();
+            }
+
+            // ─── Calculate from current inputs ─────────────────────
+            function calculate() {
+                const a = numAInput.value.trim();
+                const b = numBInput.value.trim();
+                if (a === '' || b === '') {
+                    // If empty, show a message
+                    gcdDisplay.textContent = '—';
+                    lcmDisplay.textContent = '—';
+                    stepsList.innerHTML =
+                    `<li class="empty-steps">Please enter both numbers.</li>`;
+                    if (stepsOpen) toggleSteps(false);
+                    return;
+                }
+                renderResults(a, b);
+            }
+
+            // ─── Event listeners ────────────────────────────────────
+            calculateBtn.addEventListener('click', calculate);
+
+            clearBtn.addEventListener('click', clearAll);
+
+            stepsToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Only toggle if there are actual steps to show
+                const hasContent = stepsList.querySelector('li:not(.empty-steps)');
+                if (!hasContent && !stepsOpen) {
+                    // If empty and trying to open, run calculate first
+                    calculate();
+                    // after calculate, steps will auto-open if there are results
+                    return;
+                }
+                toggleSteps();
+            });
+
+            // Enter key on inputs triggers calculate
+            numAInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault();
+                    calculate(); }
+            });
+            numBInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault();
+                    calculate(); }
+            });
+
+            // ─── Init ───────────────────────────────────────────────
+            // Run initial calculation with default values
+            window.addEventListener('DOMContentLoaded', () => {
+                // Ensure inputs have values
+                if (numAInput.value.trim() === '') numAInput.value = '48';
+                if (numBInput.value.trim() === '') numBInput.value = '18';
+                calculate();
+            });
+
+        })();
+    </script>
+
+</body>
+</html>
