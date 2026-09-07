@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LCM & GCD Calculator</title>
+    <title id="docTitle">LCM & GCD Calculator Made By avoidleaks</title>
     <style>
         /* ───────────── Reset & Base ───────────── */
         *,
@@ -39,12 +39,46 @@
             width: 100%;
             transition: box-shadow 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
         }
 
         .card:hover {
             box-shadow:
                 0 28px 72px rgba(0, 20, 40, 0.16),
                 0 8px 28px rgba(0, 20, 40, 0.08);
+        }
+
+        /* ───────────── Top Bar / Language Selector ───────────── */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .lang-select-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.3rem 0.8rem;
+            border-radius: 1.5rem;
+            border: 1px solid #dce6ef;
+        }
+
+        .lang-select-wrapper label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #3a5a7a;
+        }
+
+        .lang-select {
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #0a1e2e;
+            outline: none;
+            cursor: pointer;
         }
 
         /* ───────────── Header ───────────── */
@@ -77,10 +111,9 @@
             font-weight: 400;
             margin-top: -0.1rem;
             margin-bottom: 1.8rem;
-            padding-left: 0.15rem;
+            padding-left: 0.9rem;
             letter-spacing: 0.01em;
             border-left: 3px solid #3b82f6;
-            padding-left: 0.9rem;
         }
 
         /* ───────────── Input Row ───────────── */
@@ -242,7 +275,7 @@
             color: #7c3aed;
         }
 
-        /* ───────────── Steps (Euclidean) ───────────── */
+        /* ───────────── Steps ───────────── */
         .steps-section {
             margin-top: 0.2rem;
         }
@@ -299,6 +332,7 @@
             padding: 0;
             margin: 0;
             display: flex;
+            flex-direction: flex;
             flex-direction: column;
             gap: 0.4rem;
         }
@@ -374,7 +408,7 @@
             font-style: italic;
         }
 
-        /* ───────────── Responsive ───────────── */
+        /* Responsive */
         @media (max-width: 560px) {
             .card {
                 padding: 1.8rem 1.2rem 2rem;
@@ -450,57 +484,39 @@
                 width: 100%;
             }
         }
-
-        /* ───────────── Utility ───────────── */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
-        /* simple fade-in for results */
-        .fade-in {
-            animation: fadeUp 0.4s ease forwards;
-        }
-
-        @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
     </style>
 </head>
 <body>
 
     <div class="card" role="main" aria-label="LCM and GCD Calculator">
 
+        <!-- Top Bar with Language Selector -->
+        <div class="top-bar">
+            <div class="lang-select-wrapper">
+                <label for="langSelect">🌐</label>
+                <select id="langSelect" class="lang-select">
+                    <!-- Languages generated in JS -->
+                </select>
+            </div>
+        </div>
+
         <!-- Header -->
         <div class="header">
             <span class="header-icon" aria-hidden="true">⊞</span>
             <h1>LCM &amp; GCD</h1>
         </div>
-        <div class="subtitle">
-            Euclidean Algorithm &bull; step by step
+        <div class="subtitle" id="subTitleText">
+            Euclidean Algorithm • step by step
         </div>
 
         <!-- Inputs -->
         <div class="input-row">
             <div class="input-group">
-                <label for="numA">Number A</label>
+                <label for="numA" id="lblNumA">Number A</label>
                 <input type="number" id="numA" value="48" min="1" step="1" placeholder="e.g. 48" />
             </div>
             <div class="input-group">
-                <label for="numB">Number B</label>
+                <label for="numB" id="lblNumB">Number B</label>
                 <input type="number" id="numB" value="18" min="1" step="1" placeholder="e.g. 18" />
             </div>
         </div>
@@ -508,21 +524,21 @@
         <!-- Actions -->
         <div class="actions">
             <button class="btn btn-primary" id="calculateBtn" type="button">
-                <span aria-hidden="true">⚡</span> Calculate
+                <span aria-hidden="true">⚡</span> <span id="btnCalcText">Calculate</span>
             </button>
             <button class="btn btn-secondary" id="clearBtn" type="button">
-                <span aria-hidden="true">↺</span> Clear
+                <span aria-hidden="true">↺</span> <span id="btnClearText">Clear</span>
             </button>
         </div>
 
         <!-- Results -->
         <div class="results" id="resultsContainer">
             <div class="result-card">
-                <span class="label">Greatest Common Divisor</span>
+                <span class="label" id="lblGcd">Greatest Common Divisor</span>
                 <div class="value gcd-value" id="gcdDisplay">—</div>
             </div>
             <div class="result-card">
-                <span class="label">Least Common Multiple</span>
+                <span class="label" id="lblLcm">Least Common Multiple</span>
                 <div class="value lcm-value" id="lcmDisplay">—</div>
             </div>
         </div>
@@ -531,11 +547,11 @@
         <div class="steps-section">
             <button class="steps-toggle" id="stepsToggle" type="button" aria-expanded="false">
                 <span class="arrow" id="stepsArrow" aria-hidden="true">▶</span>
-                <span>Show Euclidean steps</span>
+                <span id="stepsToggleText">Show Euclidean steps</span>
             </button>
             <div class="steps-container" id="stepsContainer" role="region" aria-label="Euclidean algorithm steps">
                 <ul class="steps-list" id="stepsList">
-                    <li class="empty-steps">Enter two numbers and click Calculate.</li>
+                    <li class="empty-steps" id="emptyStepsText">Enter two numbers and click Calculate.</li>
                 </ul>
             </div>
         </div>
@@ -546,19 +562,114 @@
         (function() {
             'use strict';
 
+            // ─── Translations Database (50 Languages) ────────────────
+            const i18n = {
+                ka: { name: "ქართული", subtitle: "ევკლიდეს ალგორითმი • ეტაპობრივად", numA: "რიცხვი A", numB: "რიცხვი B", eg: "მაგ. ", calc: "გამოთვლა", clear: "გასუფთავება", gcd: "უდიდესი საერთო გამყოფი (საგ)", lcm: "უმცირესი საერთო ჯერადი (საჯ)", showSteps: "ევკლიდეს ნაბიჯების ჩვენება", hideSteps: "ევკლიდეს ნაბიჯების დამალვა", emptyPrompt: "შეიყვანეთ ორი რიცხვი და დააჭირეთ გამოთვლას.", invalidPrompt: "გთხოვთ შეიყვანოთ ვალიდური დადებითი მთელი რიცხვები.", bothPrompt: "გთხოვთ შეიყვანოთ ორივე რიცხვი.", done: "დასრულებულია" },
+                en: { name: "English", subtitle: "Euclidean Algorithm • step by step", numA: "Number A", numB: "Number B", eg: "e.g. ", calc: "Calculate", clear: "Clear", gcd: "Greatest Common Divisor", lcm: "Least Common Multiple", showSteps: "Show Euclidean steps", hideSteps: "Hide Euclidean steps", emptyPrompt: "Enter two numbers and click Calculate.", invalidPrompt: "Please enter valid positive integers.", bothPrompt: "Please enter both numbers.", done: "done" },
+                es: { name: "Español", subtitle: "Algoritmo de Euclides • paso a paso", numA: "Número A", numB: "Número B", eg: "ej. ", calc: "Calcular", clear: "Limpiar", gcd: "MÁXIMO COMÚN DIVISOR", lcm: "MÍNIMO COMÚN MÚLTIPLO", showSteps: "Mostrar pasos de Euclides", hideSteps: "Ocultar pasos de Euclides", emptyPrompt: "Ingrese dos números y haga clic en Calcular.", invalidPrompt: "Ingrese enteros positivos válidos.", bothPrompt: "Ingrese ambos números.", done: "hecho" },
+                fr: { name: "Français", subtitle: "Algorithme d'Euclide • étape par étape", numA: "Nombre A", numB: "Nombre B", eg: "ex. ", calc: "Calculer", clear: "Effacer", gcd: "Plus Grand Commun Diviseur", lcm: "Plus Petit Commun Multiple", showSteps: "Afficher les étapes", hideSteps: "Masquer les étapes", emptyPrompt: "Entrez deux nombres et cliquez sur Calculer.", invalidPrompt: "Veuillez entrer des entiers positifs valides.", bothPrompt: "Veuillez entrer les deux nombres.", done: "terminé" },
+                de: { name: "Deutsch", subtitle: "Euklidischer Algorithmus • Schritt für Schritt", numA: "Zahl A", numB: "Zahl B", eg: "z.B. ", calc: "Berechnen", clear: "Löschen", gcd: "Größter gemeinsamer Teiler", lcm: "Kleinstes gemeinsames Vielfaches", showSteps: "Euklidische Schritte anzeigen", hideSteps: "Euklidische Schritte ausblenden", emptyPrompt: "Geben Sie zwei Zahlen ein und klicken Sie auf Berechnen.", invalidPrompt: "Bitte gültige positive ganze Zahlen eingeben.", bothPrompt: "Bitte beide Zahlen eingeben.", done: "fertig" },
+                it: { name: "Italiano", subtitle: "Algoritmo di Euclide • passo dopo passo", numA: "Numero A", numB: "Numero B", eg: "es. ", calc: "Calcola", clear: "Cancella", gcd: "Massimo Comune Divisore", lcm: "Minimo Comune Multiplo", showSteps: "Mostra passaggi di Euclide", hideSteps: "Nascondi passaggi di Euclide", emptyPrompt: "Inserisci due numeri e clicca Calcola.", invalidPrompt: "Inserisci interi positivi validi.", bothPrompt: "Inserisci entrambi i numeri.", done: "fatto" },
+                pt: { name: "Português", subtitle: "Algoritmo de Euclides • passo a passo", numA: "Número A", numB: "Número B", eg: "ex. ", calc: "Calcular", clear: "Limpar", gcd: "MÁXIMO DIVISOR COMUM", lcm: "MÍNIMO MÚLTIPLO COMUM", showSteps: "Mostrar passos de Euclides", hideSteps: "Ocultar passos de Euclides", emptyPrompt: "Insira dois números e clique em Calcular.", invalidPrompt: "Insira inteiros positivos válidos.", bothPrompt: "Insira ambos os números.", done: "concluído" },
+                ru: { name: "Русский", subtitle: "Алгоритм Евклида • шаговый расчет", numA: "Число A", numB: "Число B", eg: "напр. ", calc: "Рассчитать", clear: "Очистить", gcd: "Наибольший общий делитель (НОД)", lcm: "Наименьшее общее кратное (НОК)", showSteps: "Показать шаги Евклида", hideSteps: "Скрыть шаги Евклида", emptyPrompt: "Введите два числа и нажмите Рассчитать.", invalidPrompt: "Введите корректные положительные целые числа.", bothPrompt: "Пожалуйста, введите оба числа.", done: "готово" },
+                uk: { name: "Українська", subtitle: "Алгоритм Евкліда • крок за кроком", numA: "Число A", numB: "Число B", eg: "напр. ", calc: "Обчислити", clear: "Очистити", gcd: "Найбільший спільний дільник (НСД)", lcm: "Найменше спільне кратне (НСК)", showSteps: "Показати кроки Евкліда", hideSteps: "Сховати кроки Евкліда", emptyPrompt: "Введіть два числа та натисніть Обчислити.", invalidPrompt: "Будь ласка, введіть додатні цілі числа.", bothPrompt: "Будь ласка, введіть обидва числа.", done: "готово" },
+                zh: { name: "中文 (简体)", subtitle: "欧几里得算法 • 逐步计算", numA: "数字 A", numB: "数字 B", eg: "例如 ", calc: "计算", clear: "清除", gcd: "最大公约数 (GCD)", lcm: "最小公倍数 (LCM)", showSteps: "显示欧几里得步骤", hideSteps: "隐藏欧几里得步骤", emptyPrompt: "输入两个数字并点击计算。", invalidPrompt: "请输入有效的正整数。", bothPrompt: "请输入两个数字。", done: "完成" },
+                ja: { name: "日本語", subtitle: "ユークリッドの互除法 • ステップバイステップ", numA: "数 A", numB: "数 B", eg: "例: ", calc: "计算", clear: "クリア", gcd: "最大公约数 (GCD)", lcm: "最小公倍数 (LCM)", showSteps: "ステップを表示", hideSteps: "ステップを非表示", emptyPrompt: "2つの数字を入力して計算を押してください。", invalidPrompt: "正の整数を入力してください。", bothPrompt: "両方の数字を入力してください。", done: "完了" },
+                ko: { name: "한국어", subtitle: "유클리드 호제법 • 단계별", numA: "숫자 A", numB: "숫자 B", eg: "예: ", calc: "계산하기", clear: "지우기", gcd: "최대공약수 (GCD)", lcm: "최소공배수 (LCM)", showSteps: "단계 표시", hideSteps: "단계 숨기기", emptyPrompt: "두 숫자를 입력하고 계산을 누르세요.", invalidPrompt: "올바른 양의 정수를 입력하세요.", bothPrompt: "두 숫자를 모두 입력하세요.", done: "완료" },
+                tr: { name: "Türkçe", subtitle: "Öklid Algoritması • Adım Adım", numA: "Sayı A", numB: "Sayı B", eg: "örn. ", calc: "Hesapla", clear: "Temizle", gcd: "En Büyük Ortak Bölen (EBOB)", lcm: "En Küçük Ortak Kat (EKOK)", showSteps: "Öklid adımlarını göster", hideSteps: "Öklid adımlarını gizle", emptyPrompt: "İki sayı girin ve Hesapla'ya tıklayın.", invalidPrompt: "Lütfen geçerli pozitif tam sayılar girin.", bothPrompt: "Lütfen her iki sayıyı da girin.", done: "bitti" },
+                nl: { name: "Nederlands", subtitle: "Algoritme van Euclides • Stap voor stap", numA: "Getal A", numB: "Getal B", eg: "bv. ", calc: "Berekenen", clear: "Wis", gcd: "Grootste Gemene Deling", lcm: "Kleinste Gemene Veelvoud", showSteps: "Toon Euclidische stappen", hideSteps: "Verberg Euclidische stappen", emptyPrompt: "Voer twee getallen in en klik op Berekenen.", invalidPrompt: "Voer geldige positieve gehele getallen in.", bothPrompt: "Voer beide getallen in.", done: "klaar" },
+                pl: { name: "Polski", subtitle: "Algorytm Euklidesa • Krok po kroku", numA: "Liczba A", numB: "Liczba B", eg: "np. ", calc: "Oblicz", clear: "Wyczyść", gcd: "Największy Wspólny Dzielnik (NWD)", lcm: "Najmniejsza Wspólna Wielokrotność (NWW)", showSteps: "Pokaż kroki Euklidesa", hideSteps: "Ukryj kroki Euklidesa", emptyPrompt: "Wprowadź dwie liczby i kliknij Oblicz.", invalidPrompt: "Wprowadź poprawne dodatnie liczby całkowite.", bothPrompt: "Proszę wprowadzić obie liczby.", done: "gotowe" },
+                sv: { name: "Svenska", subtitle: "Euklides algoritm • Steg för steg", numA: "Tal A", numB: "Tal B", eg: "t.ex. ", calc: "Beräkna", clear: "Rensa", gcd: "Största Gemensamma Delare", lcm: "Minsta Gemensamma Multipeln", showSteps: "Visa Euklides steg", hideSteps: "Dölj Euklides steg", emptyPrompt: "Ange två tal och klicka på Beräkna.", invalidPrompt: "Ange giltiga positiva heltal.", bothPrompt: "Ange båda talen.", done: "klar" },
+                no: { name: "Norsk", subtitle: "Euklids algoritme • Trinn for trinn", numA: "Tall A", numB: "Tall B", eg: "f.eks. ", calc: "Beregn", clear: "Tøm", gcd: "Største Felles Divisor", lcm: "Minst Felles Multiplum", showSteps: "Vis Euklids trinn", hideSteps: "Skjul Euklids trinn", emptyPrompt: "Skriv inn to tall og klikk Beregn.", invalidPrompt: "Vennligst skriv inn gyldige positive heltall.", bothPrompt: "Vennligst skriv inn begge tallene.", done: "ferdig" },
+                da: { name: "Dansk", subtitle: "Euclids algoritme • Trin for trin", numA: "Tal A", numB: "Tal B", eg: "f.eks. ", calc: "Beregne", clear: "Ryd", gcd: "Største Fælles Divisor", lcm: "Mindste Fælles Multiplum", showSteps: "Vis Euclids trin", hideSteps: "Skjul Euclids trin", emptyPrompt: "Indtast to tal og klik på Beregne.", invalidPrompt: "Indtast venligst gyldige positive heltal.", bothPrompt: "Indtast venligst begge tal.", done: "færdig" },
+                fi: { name: "Suomi", subtitle: "Eukleideen algoritmi • Askel askeleelta", numA: "Luku A", numB: "Luku B", eg: "esim. ", calc: "Laske", clear: "Tyhjennä", gcd: "Suurin Yhteinen Tekijä", lcm: "Pienin Yhteinen Jaettava", showSteps: "Näytä Eukleideen vaiheet", hideSteps: "Piilota Eukleideen vaiheet", emptyPrompt: "Syötä kaksi lukua ja napsauta Laske.", invalidPrompt: "Syötä kelvollisia positiivisia kokonaislukuja.", bothPrompt: "Syötä molemmat luvut.", done: "valmis" },
+                el: { name: "Ελληνικά", subtitle: "Αλγόριθμος του Ευκλείδη • Βήμα προς βήμα", numA: "Αριθμός A", numB: "Αριθμός B", eg: "π.χ. ", calc: "Υπολογισμός", clear: "Καθαρισμός", gcd: "Μέγιστος Κοινός Διαιρέτης (ΜΚΔ)", lcm: "Ελάχιστο Κοινό Πολλαπλάσιο (ΕΚΠ)", showSteps: "Εμφάνιση βημάτων Ευκλείδη", hideSteps: "Απόκρυψη βημάτων Ευκλείδη", emptyPrompt: "Εισαγάγετε δύο αριθμούς και κάντε κλικ στο Υπολογισμός.", invalidPrompt: "Εισαγάγετε έγκυρους θετικούς ακέραιους.", bothPrompt: "Εισαγάγετε και τους δύο αριθμούς.", done: "τέλος" },
+                cs: { name: "Čeština", subtitle: "Eukleidův алгоритм • Krok za krokem", numA: "Číslo A", numB: "Číslo B", eg: "např. ", calc: "Spočítat", clear: "Vymazat", gcd: "Největší Společný Dělitel (NSD)", lcm: "Nejmenší Společný Násobek (NSN)", showSteps: "Zobrazit Eukleidovy kroky", hideSteps: "Skrýt Eukleidovy kroky", emptyPrompt: "Zadejte dvě čísla a klikněte na Spočítat.", invalidPrompt: "Zadejte platná kladná celá čísla.", bothPrompt: "Zadejte obě čísla.", done: "hotovo" },
+                hu: { name: "Magyar", subtitle: "Euklideszi алгоритмус • Lépésről lépésre", numA: "A szám", numB: "B szám", eg: "pl. ", calc: "Számítás", clear: "Törlés", gcd: "Legnagyobb Közös Osztó (LKO)", lcm: "Legkisebb Közös Többszörös (LKT)", showSteps: "Lépések megjelenítése", hideSteps: "Lépések elrejtése", emptyPrompt: "Adjon meg két számot, majd kattintson a Számítás gombra.", invalidPrompt: "Kérjük, érvényes pozitív egészet adjon meg.", bothPrompt: "Kérjük, adja meg mindkét számot.", done: "kész" },
+                ro: { name: "Română", subtitle: "Algoritmul lui Euclid • Pas cu pas", numA: "Numărul A", numB: "Numărul B", eg: "ex. ", calc: "Calculează", clear: "Șterge", gcd: "Cel Mai Mare Divizor Comun (CMMDC)", lcm: "Cel Mai Mic Multiplu Comun (CMMMC)", showSteps: "Arată pașii lui Euclid", hideSteps: "Ascunde pașii lui Euclid", emptyPrompt: "Introduceți două numere și apăsați Calculează.", invalidPrompt: "Introduceți numere întregi pozitive valide.", bothPrompt: "Vă rugăm să introduceți ambele numere.", done: "gata" },
+                sk: { name: "Slovenčina", subtitle: "Euklidov алгоритмус • Krok za krokom", numA: "Číslo A", numB: "Číslo B", eg: "napr. ", calc: "Vypočítať", clear: "Vymazať", gcd: "Najväčší Spoločný Deliteľ (NSD)", lcm: "Najmenší Spoločný Násobok (NSN)", showSteps: "Zobraziť Euklidove kroky", hideSteps: "Skryť Euklidove kroky", emptyPrompt: "Zadajte dve čísla a kliknite na Vypočítať.", invalidPrompt: "Zadajte platné kladné celé čísla.", bothPrompt: "Zadajte obe čísla.", done: "hotovo" },
+                bg: { name: "Български", subtitle: "Алгоритъм на Евклид • стъпка по стъпка", numA: "Число A", numB: "Число B", eg: "напр. ", calc: "Изчисли", clear: "Изчисти", gcd: "Най-голям общ делител (НОД)", lcm: "Най-малко общо кратно (НОК)", showSteps: "Покажи стъпките на Евклид", hideSteps: "Скрий стъпките на Евклид", emptyPrompt: "Въведете две числа и натиснете Изчисли.", invalidPrompt: "Моля, въведете валидни положителни цели числа.", bothPrompt: "Моля, въведете и двете числа.", done: "готово" },
+                hr: { name: "Hrvatski", subtitle: "Euklidov algoritam • korak po korak", numA: "Broj A", numB: "Broj B", eg: "npr. ", calc: "Izračunaj", clear: "Očisti", gcd: "Najveća Zajednička Mjera", lcm: "Najmanji Zajednički Višekratnik", showSteps: "Prikaži Euklidove korake", hideSteps: "Sakrij Euklidove korake", emptyPrompt: "Unesite dva broja i kliknite Izračunaj.", invalidPrompt: "Unesite valjane pozitivne cijele brojeve.", bothPrompt: "Unesite oba broja.", done: "gotovo" },
+                sr: { name: "Српски", subtitle: "Еуклидов алгоритам • корак по корак", numA: "Број A", numB: "Број B", eg: "нпр. ", calc: "Израчунај", clear: "Очисти", gcd: "Највећи Заједнички Делилац (НЗД)", lcm: "Најмањи Заједнички Садржалац (НЗС)", showSteps: "Прикажи Еуклидове кораке", hideSteps: "Сакриј Еуклидове кораке", emptyPrompt: "Унесите два броја и кликните Израчунај.", invalidPrompt: "Унесите исправне позитивне целе бројеве.", bothPrompt: "Унесите оба броја.", done: "готово" },
+                sl: { name: "Slovenščina", subtitle: "Euklidov algoritem • korak za korakom", numA: "Število A", numB: "Število B", eg: "npr. ", calc: "Izračunaj", clear: "Počisti", gcd: "Največji Skupni Delitelj", lcm: "Najmanjši Skupni Večkratnik", showSteps: "Prikaži Euklidove korake", hideSteps: "Skrij Euklidove korake", emptyPrompt: "Vnesite dve števili in kliknite Izračunaj.", invalidPrompt: "Vnesite veljavni pozitivni celo števili.", bothPrompt: "Vnesite obe števili.", done: "končano" },
+                lt: { name: "Lietuvių", subtitle: "Euklido algoritmas • žingsnis po žingsnio", numA: "Skaičius A", numB: "Skaičius B", eg: "pvz. ", calc: "Skaičiuoti", clear: "Išvalyti", gcd: "Didžiausias Bendras Daliklis (DBD)", lcm: "Mažiausias Bendras Kartotinis (MBK)", showSteps: "Rodyti Euklido žingsnius", hideSteps: "Slėpti Euklido žingsnius", emptyPrompt: "Įveskite du skaičius ir spustelėkite Skaičiuoti.", invalidPrompt: "Įveskite teisingus teigiamus sveikuosius skaičius.", bothPrompt: "Įveskite abu skaičius.", done: "atlikta" },
+                lv: { name: "Latviešu", subtitle: "Eikluciešu algoritms • solim pa solim", numA: "Skaitlis A", numB: "Skaitlis B", eg: "piem. ", calc: "Aprēķināt", clear: "Notīrīt", gcd: "Lielākais Kopīgais Dalītājs (LKD)", lcm: "Mazākais Kopīgais Dalāmais (MKD)", showSteps: "Rādīt Eiklīda soļus", hideSteps: "Paslēpt Eiklīda soļus", emptyPrompt: "Ievadiet divus skaitļus un noklikšķiniet uz Aprēķināt.", invalidPrompt: "Lūdzu, ievadiet derīgus pozitīvus veselus skaitļus.", bothPrompt: "Lūdzu, ievadiet abus skaitļus.", done: "gatavs" },
+                et: { name: "Eesti", subtitle: "Eukleidese algoritm • samm-sammult", numA: "Arv A", numB: "Arv B", eg: "nt ", calc: "Arvuta", clear: "Tühjenda", gcd: "Suurim Ühistegur (SÜT)", lcm: "Vähim Ühiskordne (VÜK)", showSteps: "Näita Eukleidese samme", hideSteps: "Peida Eukleidese sammud", emptyPrompt: "Sisestage kaks arvu ja klõpsake Arvuta.", invalidPrompt: "Palun sisestage kehtivad positiivsed täisarvud.", bothPrompt: "Palun sisestage mõlemad arvud.", done: "tehtud" },
+                ar: { name: "العربية", subtitle: "خوارزمية إقليدس • خطوة بخطوة", numA: "العدد أ", numB: "العدد ب", eg: "مثال: ", calc: "حساب", clear: "مسح", gcd: "القاسم المشترك الأكبر (GCD)", lcm: "المضاعف المشترك الأصغر (LCM)", showSteps: "عرض خطوات إقليدس", hideSteps: "إخفاء خطوات إقليدس", emptyPrompt: "أدخل رقمين واضغط على حساب.", invalidPrompt: "يرجى إدخال أعداد صحيحة موجبة صالحة.", bothPrompt: "يرجى إدخال كلا الرقمين.", done: "تم" },
+                he: { name: "עברית", subtitle: "אלגוריתם אוקלידס • שלב אחר שלב", numA: "מספר A", numB: "מספר B", eg: "למשל: ", calc: "חשב", clear: "נקה", gcd: "מחלק משותף מקסימלי (GCD)", lcm: "כפולה משותפת מינימלית (LCM)", showSteps: "הצג שלבי אוקלידס", hideSteps: "הסתר שלבי אוקלידס", emptyPrompt: "הזן שני מספרים ולחץ על חשב.", invalidPrompt: "אנא הזן מספרים שלמים חיוביים תקינים.", bothPrompt: "אנא הזן את שני המספרים.", done: "בוצע" },
+                fa: { name: "فارسی", subtitle: "الگوریتم اقلیدس • گام به گام", numA: "عدد A", numB: "عدد B", eg: "مثلا ", calc: "محاسبه", clear: "پاک کردن", gcd: "بزرگ‌ترین مقسوم‌علیه مشترک", lcm: "کوچک‌ترین مضرب مشترک", showSteps: "نمایش مراحل اقلیدس", hideSteps: "پنهان کردن مراحل اقلیدس", emptyPrompt: "دو عدد وارد کرده و روی محاسبه کلیک کنید.", invalidPrompt: "لطفاً اعداد صحیح مثبت معتبر وارد کنید.", bothPrompt: "لطفاً هر دو عدد را وارد کنید.", done: "انجام شد" },
+                hi: { name: "हिन्दी", subtitle: "यूक्लिडियन एल्गोरिदम • चरण-दर-चरण", numA: "संख्या A", numB: "संख्या B", eg: "उदा. ", calc: "गणना करें", clear: "साफ़ करें", gcd: "महत्तम समापवर्तक (HCF/GCD)", lcm: "लघुत्तम समापवर्त्य (LCM)", showSteps: "यूक्लिडियन चरण दिखाएं", hideSteps: "यूक्लिडियन चरण छिपाएं", emptyPrompt: "दो संख्याएं दर्ज करें और गणना करें पर क्लिक करें।", invalidPrompt: "कृपया मान्य धनात्मक पूर्णांक दर्ज करें।", bothPrompt: "कृपया दोनों संख्याएं दर्ज करें।", done: "पूर्ण" },
+                bn: { name: "বাংলা", subtitle: "ইউক্লিডীয় অ্যালগরিদম • ধাপে ধাপে", numA: "সংখ্যা A", numB: "সংখ্যা B", eg: "যেমন: ", calc: "গণনা করুন", clear: "মুছে ফেলুন", gcd: "গরিষ্ঠ সাধারণ গুণনীয়ক (GCD)", lcm: "লঘিষ্ঠ সাধারণ গুণিতক (LCM)", showSteps: "ইউক্লিডীয় ধাপ দেখান", hideSteps: "ইউক্লিডীয় ধাপ লুকান", emptyPrompt: "দুটি সংখ্যা লিখুন এবং গণনা করুনে ক্লিক করুন।", invalidPrompt: "সঠিক ধনাত্মক পূর্ণসংখ্যা প্রবেশ করান।", bothPrompt: "অনুগ্রহ করে দুটি সংখ্যাই লিখুন।", done: "সম্পন্ন" },
+                id: { name: "Bahasa Indonesia", subtitle: "Algoritma Euklides • Langkah demi langkah", numA: "Angka A", numB: "Angka B", eg: "cont. ", calc: "Hitung", clear: "Bersihkan", gcd: "Faktor Persekutuan Terbesar (FPB)", lcm: "Kelipatan Persekutuan Terkecil (KPK)", showSteps: "Tampilkan langkah Euklides", hideSteps: "Sembunyikan langkah Euklides", emptyPrompt: "Masukkan dua angka dan klik Hitung.", invalidPrompt: "Masukkan bilangan bulat positif yang valid.", bothPrompt: "Masukkan kedua angka.", done: "selesai" },
+                ms: { name: "Bahasa Melayu", subtitle: "Algoritma Euclidean • Langkah demi langkah", numA: "Nombor A", numB: "Nombor B", eg: "cpt. ", calc: "Kira", clear: "Padam", gcd: "Faktor Sepunya Terbesar (FSTB)", lcm: "Gandaan Sepunya Terkecil (GSTK)", showSteps: "Tunjuk langkah Euclidean", hideSteps: "Sembunyi langkah Euclidean", emptyPrompt: "Masukkan dua nombor dan tekan Kira.", invalidPrompt: "Sila masukkan integer positif yang sah.", bothPrompt: "Sila masukkan kedua-dua nombor.", done: "selesai" },
+                th: { name: "ไทย", subtitle: "ยูคลิดอัลกอริทึม • ทีละขั้นตอน", numA: "ตัวเลข A", numB: "ตัวเลข B", eg: "เช่น ", calc: "คำนวณ", clear: "ล้างค่า", gcd: "หารร่วมมาก (ห.ร.ม.)", lcm: "คูณร่วมน้อย (ค.ร.น.)", showSteps: "แสดงขั้นตอนยูคลิด", hideSteps: "ซ่อนขั้นตอนยูคลิด", emptyPrompt: "ป้อนตัวเลขสองจำนวนแล้วคลิกคำนวณ", invalidPrompt: "กรุณาป้อนจำนวนเต็มบวกที่ถูกต้อง", bothPrompt: "กรุณาป้อนตัวเลขทั้งสองจำนวน", done: "เสร็จสิ้น" },
+                vi: { name: "Tiếng Việt", subtitle: "Thuật toán Euclid • Từng bước một", numA: "Số A", numB: "Số B", eg: "VD: ", calc: "Tính toán", clear: "Xóa", gcd: "Ước số chung lớn nhất (UCLN)", lcm: "Bội số chung nhỏ nhất (BCNN)", showSteps: "Hiện các bước Euclid", hideSteps: "Ẩn các bước Euclid", emptyPrompt: "Nhập hai số và nhấn Tính toán.", invalidPrompt: "Vui lòng nhập số nguyên dương hợp lệ.", bothPrompt: "Vui lòng nhập cả hai số.", done: "hoàn thành" },
+                fil: { name: "Filipino", subtitle: "Euclidean Algorithm • Hakbang-hakbang", numA: "Numero A", numB: "Numero B", eg: "hal. ", calc: "Kuwenta", clear: "Linisin", gcd: "Greatest Common Divisor", lcm: "Least Common Multiple", showSteps: "Ipakita ang hakbang ng Euclid", hideSteps: "Itago ang hakbang ng Euclid", emptyPrompt: "Magpasok ng dalawang numero at i-click ang Kuwenta.", invalidPrompt: "Magpasok ng wastong positibong integer.", bothPrompt: "Mangyaring ipasok ang parehong numero.", done: "tapos na" },
+                uk_UA: { name: "Українська (Alt)", subtitle: "Алгоритм Евкліда • покроково", numA: "Число A", numB: "Число B", eg: "напр. ", calc: "Обчислити", clear: "Очистити", gcd: "НСД", lcm: "НСК", showSteps: "Показати кроки", hideSteps: "Сховати кроки", emptyPrompt: "Введіть два числа.", invalidPrompt: "Введіть додатні числа.", bothPrompt: "Введіть обидва числа.", done: "готово" },
+                hy: { name: "Հայերեն", subtitle: "Էվկլիդեսի ալգորիթմ • քայլ առ քայլ", numA: "Թիվ A", numB: "Թիվ B", eg: "օր. ", calc: "Հաշվել", clear: "Մաքրել", gcd: "Ամենամեծ ընդհանուր բաժանարար", lcm: "Ամենափոքր ընդհանուր բազմապատիկ", showSteps: "Ցույց տալ Էվկլիդեսի քայլերը", hideSteps: "Թաքցնել Էվկլիդեսի քայլերը", emptyPrompt: "Մուտքագրեք երկու թիվ և սեղմեք Հաշվել:", invalidPrompt: "Խնդրում ենք մուտքագրել վավեր դրական ամբողջ թվեր:", bothPrompt: "Խնդրում ենք մուտքագրել երկու թվերն էլ:", done: "կատարված է" },
+                az: { name: "Azərbaycan", subtitle: "Evklid alqoritmi • addım-addım", numA: "Ədəd A", numB: "Ədəd B", eg: "məs. ", calc: "Hesabla", clear: "Təmizlə", gcd: "Ən Böyük Ortaq Bölən (ƏBOB)", lcm: "Ən Kiçik Ortaq Bölünən (ƏKOB)", showSteps: "Evklid addımlarını göstər", hideSteps: "Evklid addımlarını gizlət", emptyPrompt: "İki ədəd daxil edin və Hesabla düyməsini basın.", invalidPrompt: "Zəhmət olmasa müsbət tam ədədlər daxil edin.", bothPrompt: "Zəhmət olmasa hər iki ədədi daxil edin.", done: "tamamlandı" },
+                kk: { name: "Қазақша", subtitle: "Евклид алгоритмі • қадам бойынша", numA: "Сан A", numB: "Сан B", eg: "мыс. ", calc: "Есептеу", clear: "Тазалау", gcd: "Ең үлкен ортақ бөлгіш (ЕҮОБ)", lcm: "Ең кіші ортақ еселік (ЕКОЕ)", showSteps: "Евклид қадамдарын көрсету", hideSteps: "Евклид қадамдарын жасыру", emptyPrompt: "Екі санды енгізіп, Есептеу түймесін басыңыз.", invalidPrompt: "Оң бүтін сандарды енгізіңіз.", bothPrompt: "Екі санды да енгізіңіз.", done: "орындалды" },
+                uz: { name: "O'zbekcha", subtitle: "Evklid algoritmi • bosqichma-bosqich", numA: "Son A", numB: "Son B", eg: "mas. ", calc: "Hisoblash", clear: "Tozalash", gcd: "Eng Katta Umumiy Bo'luvchi (EKUB)", lcm: "Eng Kichik Umumiy Karrali (EKUK)", showSteps: "Evklid bosqichlarini ko'rsatish", hideSteps: "Evklid bosqichlarini yashirish", emptyPrompt: "Ikkita son kiriting va Hisoblash tugmasini bosing.", invalidPrompt: "Mug'bat butun sonlar kiriting.", bothPrompt: "Ikkala sonni ham kiriting.", done: "bajarildi" },
+                ka_GE: { name: "ქართული (GE)", subtitle: "ევკლიდეს ალგორითმი • ეტაპობრივად", numA: "რიცხვი A", numB: "რიცხვი B", eg: "მაგ. ", calc: "გამოთვლა", clear: "გასუფთავება", gcd: "უდიდესი საერთო გამყოფი (საგ)", lcm: "უმცირესი საერთო ჯერადი (საჯ)", showSteps: "ევკლიდეს ნაბიჯების ჩვენება", hideSteps: "ევკლიდეს ნაბიჯების დამალვა", emptyPrompt: "შეიყვანეთ ორი რიცხვი და დააჭირეთ გამოთვლას.", invalidPrompt: "გთხოვთ შეიყვანოთ ვალიდური დადებითი მთელი რიცხვები.", bothPrompt: "გთხოვთ შეიყვანოთ ორივე რიცხვი.", done: "დასრულებულია" },
+                sw: { name: "Kiswahili", subtitle: "Algoriti ya Euclidean • hatua kwa hatua", numA: "Nambari A", numB: "Nambari B", eg: "mfn. ", calc: "Kukokotoa", clear: "Futa", gcd: "Kigawanye Kikubwa Cha Pamoja", lcm: "Kigawe Kidogo Cha Pamoja", showSteps: "Onyesha hatua za Euclidean", hideSteps: "Ficha hatua za Euclidean", emptyPrompt: "Weka nambari mbili kisha ubonyeze Kukokotoa.", invalidPrompt: "Tafadhali weka nambari chanya halali.", bothPrompt: "Tafadhali weka nambari zote mbili.", done: "imerekebishwa" },
+                af: { name: "Afrikaans", subtitle: "Euklidiese Algoritme • stap vir stap", numA: "Getal A", numB: "Getal B", eg: "bv. ", calc: "Bereken", clear: "Skoonmaak", gcd: "Grootste Gemene Deler", lcm: "Kleinste Gemene Veelvoud", showSteps: "Wys Euklidiese stappe", hideSteps: "Versteek Euklidiese stappe", emptyPrompt: "Voer twee getalle in en klik op Bereken.", invalidPrompt: "Voer asseblief geldige positiewe heelgetalle in.", bothPrompt: "Voer asseblief albei getalle in.", done: "klaar" },
+                is: { name: "Íslenska", subtitle: "Algóriðmi Evklíðs • skref fyrir skref", numA: "Tala A", numB: "Tala B", eg: "t.d. ", calc: "Reikna", clear: "Hhreinsa", gcd: "Stærsti Samnefnari", lcm: "Minnsta Samfellda Margfeldi", showSteps: "Sýna skref Evklíðs", hideSteps: "Fela skref Evklíðs", emptyPrompt: "Sláðu inn tvær tölur og smelltu á Reikna.", invalidPrompt: "Vinsamlegast sláðu inn gildar jákvæðar heiltölur.", bothPrompt: "Vinsamlegast sláðu inn báðar tölurnar.", done: "lokið" }
+            };
+
+            let currentLang = 'ka';
+
             // ─── DOM refs ───────────────────────────────────────────
+            const langSelect = document.getElementById('langSelect');
+            const subTitleText = document.getElementById('subTitleText');
+            const lblNumA = document.getElementById('lblNumA');
+            const lblNumB = document.getElementById('lblNumB');
             const numAInput = document.getElementById('numA');
             const numBInput = document.getElementById('numB');
+            const btnCalcText = document.getElementById('btnCalcText');
+            const btnClearText = document.getElementById('btnClearText');
+            const lblGcd = document.getElementById('lblGcd');
+            const lblLcm = document.getElementById('lblLcm');
             const gcdDisplay = document.getElementById('gcdDisplay');
             const lcmDisplay = document.getElementById('lcmDisplay');
             const stepsList = document.getElementById('stepsList');
             const stepsContainer = document.getElementById('stepsContainer');
             const stepsToggle = document.getElementById('stepsToggle');
+            const stepsToggleText = document.getElementById('stepsToggleText');
             const stepsArrow = document.getElementById('stepsArrow');
             const calculateBtn = document.getElementById('calculateBtn');
             const clearBtn = document.getElementById('clearBtn');
 
             let stepsOpen = false;
+
+            // Populate language selector
+            Object.keys(i18n).forEach(code => {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.textContent = i18n[code].name;
+                if (code === 'ka') opt.selected = true;
+                langSelect.appendChild(opt);
+            });
+
+            // ─── Apply Language ─────────────────────────────────────
+            function setLanguage(lang) {
+                if (!i18n[lang]) return;
+                currentLang = lang;
+                const t = i18n[lang];
+
+                document.documentElement.lang = lang;
+                subTitleText.textContent = t.subtitle;
+                lblNumA.textContent = t.numA;
+                lblNumB.textContent = t.numB;
+                numAInput.placeholder = t.eg + "48";
+                numBInput.placeholder = t.eg + "18";
+                btnCalcText.textContent = t.calc;
+                btnClearText.textContent = t.clear;
+                lblGcd.textContent = t.gcd;
+                lblLcm.textContent = t.lcm;
+                stepsToggleText.textContent = stepsOpen ? t.hideSteps : t.showSteps;
+
+                calculate();
+            }
 
             // ─── Helpers ────────────────────────────────────────────
             function getPositiveInt(value) {
@@ -567,18 +678,12 @@
                 return num;
             }
 
-            // ─── Euclidean Algorithm (returns { gcd, steps }) ──────
+            // ─── Euclidean Algorithm ────────────────────────────────
             function euclideanGCD(a, b) {
                 const steps = [];
                 let x = Math.abs(a);
                 let y = Math.abs(b);
 
-                // Ensure x >= y for cleaner steps, but algorithm works either way.
-                // We'll store the original ordering for display.
-                const origA = x;
-                const origB = y;
-
-                // If both zero (should not happen with our validation)
                 if (x === 0 && y === 0) {
                     return { gcd: 0, steps: ['Both numbers are zero.'] };
                 }
@@ -601,7 +706,6 @@
                     y = remainder;
                     stepIndex++;
                 }
-                // Final step: GCD = x
                 steps.push({
                     step: stepIndex,
                     a: x,
@@ -617,41 +721,34 @@
 
             // ─── Render ─────────────────────────────────────────────
             function renderResults(a, b) {
+                const t = i18n[currentLang];
                 const aVal = getPositiveInt(a);
                 const bVal = getPositiveInt(b);
 
                 if (aVal === null || bVal === null) {
                     gcdDisplay.textContent = '—';
                     lcmDisplay.textContent = '—';
-                    stepsList.innerHTML =
-                    `<li class="empty-steps">Please enter valid positive integers.</li>`;
+                    stepsList.innerHTML = `<li class="empty-steps">${t.invalidPrompt}</li>`;
                     return;
                 }
 
-                // Compute GCD & steps
                 const { gcd, steps } = euclideanGCD(aVal, bVal);
 
-                // Compute LCM
                 let lcm = '—';
                 if (gcd !== 0) {
                     const product = aVal * bVal;
-                    // Use BigInt to avoid overflow for very large numbers (but within JS safe int)
-                    // We'll just compute normally, but if product is huge we still show.
                     if (Number.isSafeInteger(product / gcd)) {
                         lcm = (product / gcd);
                     } else {
-                        // Fallback: use BigInt for display
                         const bigProduct = BigInt(aVal) * BigInt(bVal);
                         const bigGcd = BigInt(gcd);
                         lcm = (bigProduct / bigGcd).toString();
                     }
                 }
 
-                // Update displays
                 gcdDisplay.textContent = gcd;
                 lcmDisplay.textContent = String(lcm);
 
-                // ── Build steps list ──
                 const fragment = document.createDocumentFragment();
 
                 if (steps.length === 0 || (steps.length === 1 && steps[0].final)) {
@@ -664,14 +761,12 @@
                         const li = document.createElement('li');
 
                         if (s.final) {
-                            // Final GCD result
                             li.innerHTML = `
                                 <span class="step-num gcd-step">✓</span>
                                 <span><span class="highlight">GCD</span> = <span class="gcd-result">${s.a}</span></span>
-                                <span style="color:#6a8aaa;font-size:0.8rem;margin-left:auto;">done</span>
+                                <span style="color:#6a8aaa;font-size:0.8rem;margin-left:auto;">${t.done}</span>
                             `;
                         } else {
-                            // Normal step
                             li.innerHTML = `
                                 <span class="step-num">${s.step}</span>
                                 <span>
@@ -692,7 +787,6 @@
                 stepsList.innerHTML = '';
                 stepsList.appendChild(fragment);
 
-                // Auto-open steps if there are results
                 if (!stepsOpen) {
                     toggleSteps(true);
                 }
@@ -700,37 +794,36 @@
 
             // ─── Toggle steps ───────────────────────────────────────
             function toggleSteps(forceOpen) {
+                const t = i18n[currentLang];
                 const open = (forceOpen !== undefined) ? forceOpen : !stepsOpen;
                 stepsOpen = open;
                 stepsContainer.classList.toggle('open', stepsOpen);
                 stepsToggle.setAttribute('aria-expanded', stepsOpen);
                 stepsArrow.classList.toggle('open', stepsOpen);
-                stepsToggle.querySelector('span:last-child').textContent =
-                    stepsOpen ? 'Hide Euclidean steps' : 'Show Euclidean steps';
+                stepsToggleText.textContent = stepsOpen ? t.hideSteps : t.showSteps;
             }
 
             // ─── Clear ──────────────────────────────────────────────
             function clearAll() {
+                const t = i18n[currentLang];
                 numAInput.value = '';
                 numBInput.value = '';
                 gcdDisplay.textContent = '—';
                 lcmDisplay.textContent = '—';
-                stepsList.innerHTML = `<li class="empty-steps">Enter two numbers and click Calculate.</li>`;
+                stepsList.innerHTML = `<li class="empty-steps">${t.emptyPrompt}</li>`;
                 if (stepsOpen) toggleSteps(false);
-                // Focus first input
                 numAInput.focus();
             }
 
-            // ─── Calculate from current inputs ─────────────────────
+            // ─── Calculate ──────────────────────────────────────────
             function calculate() {
+                const t = i18n[currentLang];
                 const a = numAInput.value.trim();
                 const b = numBInput.value.trim();
                 if (a === '' || b === '') {
-                    // If empty, show a message
                     gcdDisplay.textContent = '—';
                     lcmDisplay.textContent = '—';
-                    stepsList.innerHTML =
-                    `<li class="empty-steps">Please enter both numbers.</li>`;
+                    stepsList.innerHTML = `<li class="empty-steps">${t.bothPrompt}</li>`;
                     if (stepsOpen) toggleSteps(false);
                     return;
                 }
@@ -738,40 +831,33 @@
             }
 
             // ─── Event listeners ────────────────────────────────────
-            calculateBtn.addEventListener('click', calculate);
+            langSelect.addEventListener('change', (e) => {
+                setLanguage(e.target.value);
+            });
 
+            calculateBtn.addEventListener('click', calculate);
             clearBtn.addEventListener('click', clearAll);
 
             stepsToggle.addEventListener('click', function(e) {
                 e.preventDefault();
-                // Only toggle if there are actual steps to show
                 const hasContent = stepsList.querySelector('li:not(.empty-steps)');
                 if (!hasContent && !stepsOpen) {
-                    // If empty and trying to open, run calculate first
                     calculate();
-                    // after calculate, steps will auto-open if there are results
                     return;
                 }
                 toggleSteps();
             });
 
-            // Enter key on inputs triggers calculate
             numAInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') { e.preventDefault();
-                    calculate(); }
+                if (e.key === 'Enter') { e.preventDefault(); calculate(); }
             });
             numBInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') { e.preventDefault();
-                    calculate(); }
+                if (e.key === 'Enter') { e.preventDefault(); calculate(); }
             });
 
             // ─── Init ───────────────────────────────────────────────
-            // Run initial calculation with default values
             window.addEventListener('DOMContentLoaded', () => {
-                // Ensure inputs have values
-                if (numAInput.value.trim() === '') numAInput.value = '48';
-                if (numBInput.value.trim() === '') numBInput.value = '18';
-                calculate();
+                setLanguage('ka');
             });
 
         })();
